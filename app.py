@@ -16,7 +16,11 @@ def get_info():
     if not url:
         return jsonify({"error": "Missing 'url'"}), 400
     try:
-        ydl_opts = {"quiet": True, "dump_single_json": True}
+        ydl_opts = {
+            "quiet": True,
+            "dump_single_json": True,
+            "cookiefile": "cookies.txt"   # ✅ Added line
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
         return jsonify(info)
@@ -32,7 +36,12 @@ def download_video():
     try:
         temp_dir = tempfile.mkdtemp()
         outtmpl = os.path.join(temp_dir, "%(title)s.%(ext)s")
-        ydl_opts = {"outtmpl": outtmpl, "quiet": True, "merge_output_format": "mp4"}
+        ydl_opts = {
+            "outtmpl": outtmpl,
+            "quiet": True,
+            "merge_output_format": "mp4",
+            "cookiefile": "cookies.txt"   # ✅ Added line
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             filename = ydl.prepare_filename(info)
@@ -47,7 +56,13 @@ def get_transcript():
     if not url:
         return jsonify({"error": "Missing 'url'"}), 400
     try:
-        ydl_opts = {"skip_download": True, "writesubtitles": True, "subtitleslangs": ["en"], "quiet": True}
+        ydl_opts = {
+            "skip_download": True,
+            "writesubtitles": True,
+            "subtitleslangs": ["en"],
+            "quiet": True,
+            "cookiefile": "cookies.txt"   # ✅ Added line
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             subs = info.get("subtitles") or info.get("automatic_captions")
